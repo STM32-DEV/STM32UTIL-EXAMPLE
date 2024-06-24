@@ -1,0 +1,3 @@
+[submodule "STM32UTIL"]
+	path = STM32UTIL
+	url = https://github.com/STM32-DEV/STM32UTIL.git
