@@ -23,7 +23,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdio.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -106,8 +106,10 @@ int main(void)
 
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
+	int count = 0;
 	while (1)
 	{
+		printf("%d: This is test.\r\n", count++);
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
