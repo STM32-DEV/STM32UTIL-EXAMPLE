@@ -22,6 +22,7 @@
 #include "stm32h7xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "stm32util-debug-uart.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -55,8 +56,7 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
-extern DMA_HandleTypeDef hdma_usart3_tx;
-extern UART_HandleTypeDef huart3;
+
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -205,14 +205,13 @@ void SysTick_Handler(void)
 void USART3_IRQHandler(void)
 {
 	/* USER CODE BEGIN USART3_IRQn 0 */
-#if STM32UTIL_DEBUG_USE_LL
+#if STM32UTIL_DEBUG_UART_USE_LL
 	if (LL_USART_IsActiveFlag_TC(STM32UTIL_DEBUG_UART)) {
 		LL_USART_ClearFlag_TC(STM32UTIL_DEBUG_UART);
 		STM32UTIL_DEBUG_UART_TC_isr();
 	}
 #endif
 	/* USER CODE END USART3_IRQn 0 */
-	HAL_UART_IRQHandler(&huart3);
 	/* USER CODE BEGIN USART3_IRQn 1 */
 
 	/* USER CODE END USART3_IRQn 1 */
@@ -224,14 +223,14 @@ void USART3_IRQHandler(void)
 void DMA1_Stream7_IRQHandler(void)
 {
 	/* USER CODE BEGIN DMA1_Stream7_IRQn 0 */
-#if STM32UTIL_DEBUG_USE_LL
-	if (STM32UTIL_DEBUG_DMA_IsActiveFlag_TC()) {
-		STM32UTIL_DEBUG_DMA_ClearFlag_TC();
-		STM32UTIL_DEBUG_DMA_TC_isr();
+#if STM32UTIL_DEBUG_UART_USE_LL
+	if (STM32UTIL_DEBUG_UART_DMA_IsActiveFlag_TC()) {
+		STM32UTIL_DEBUG_UART_DMA_ClearFlag_TC();
+		STM32UTIL_DEBUG_UART_DMA_TC_isr();
 	}
 #endif
 	/* USER CODE END DMA1_Stream7_IRQn 0 */
-	HAL_DMA_IRQHandler(&hdma_usart3_tx);
+
 	/* USER CODE BEGIN DMA1_Stream7_IRQn 1 */
 
 	/* USER CODE END DMA1_Stream7_IRQn 1 */

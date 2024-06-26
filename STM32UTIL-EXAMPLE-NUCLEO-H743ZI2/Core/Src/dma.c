@@ -44,8 +44,8 @@ void MX_DMA_Init(void)
 
 	/* DMA interrupt init */
 	/* DMA1_Stream7_IRQn interrupt configuration */
-	HAL_NVIC_SetPriority(DMA1_Stream7_IRQn, 0, 0);
-	HAL_NVIC_EnableIRQ(DMA1_Stream7_IRQn);
+	NVIC_SetPriority(DMA1_Stream7_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),0, 0));
+	NVIC_EnableIRQ(DMA1_Stream7_IRQn);
 
 }
 
