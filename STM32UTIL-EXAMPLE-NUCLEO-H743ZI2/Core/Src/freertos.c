@@ -57,7 +57,14 @@ const osThreadAttr_t defaultTask_attributes = {
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
+osThreadId_t secondTaskHandle;
+const osThreadAttr_t secondTask_attributes = {
+	.name = "secondTask",
+	.stack_size = 256 * 4,
+	.priority = (osPriority_t) osPriorityNormal,
+};
 
+void secondDefaultTask(void *argument);
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void *argument);
@@ -96,6 +103,7 @@ void MX_FREERTOS_Init(void) {
 
 	/* USER CODE BEGIN RTOS_THREADS */
 	/* add threads, ... */
+	secondTaskHandle = osThreadNew(secondDefaultTask, NULL, &secondTask_attributes);
 	/* USER CODE END RTOS_THREADS */
 
 	/* USER CODE BEGIN RTOS_EVENTS */
@@ -117,7 +125,7 @@ void StartDefaultTask(void *argument)
 	/* Infinite loop */
 	int count = 0;
 	for(;;) {
-		printf("%d: This is test.\r\n", count++);
+		printf("%d: 1: This is test.\r\n", count++);
 		osDelay(1);
 	}
 	/* USER CODE END StartDefaultTask */
@@ -125,6 +133,17 @@ void StartDefaultTask(void *argument)
 
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
+void secondDefaultTask(void *argument)
+{
+	/* USER CODE BEGIN StartDefaultTask */
+	/* Infinite loop */
+	int count = 0;
+	for(;;) {
+		printf("%d: 2: This is test.\r\n", count++);
+		osDelay(1);
+	}
+	/* USER CODE END StartDefaultTask */
+}
 
 /* USER CODE END Application */
 
