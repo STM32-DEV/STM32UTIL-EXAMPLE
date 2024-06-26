@@ -85,7 +85,7 @@ void MX_USART3_UART_Init(void)
 	LL_DMA_DisableFifoMode(DMA1, LL_DMA_STREAM_7);
 
 	/* USART3 interrupt Init */
-	NVIC_SetPriority(USART3_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),0, 0));
+	NVIC_SetPriority(USART3_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),5, 0));
 	NVIC_EnableIRQ(USART3_IRQn);
 
 	/* USER CODE BEGIN USART3_Init 1 */

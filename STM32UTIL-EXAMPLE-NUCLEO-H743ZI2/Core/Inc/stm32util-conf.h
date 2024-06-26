@@ -1,7 +1,7 @@
 #ifndef __STM32UTIL_CONF_H__
 #define __STM32UTIL_CONF_H__
 
-#define STM32UTIL_USE_OS                        0
+#define STM32UTIL_USE_OS                        1
 
 #define STM32UTIL_DEBUG_ON                      1
 
