@@ -4,6 +4,7 @@
 #define STM32UTIL_USE_OS                        1
 
 #define STM32UTIL_DEBUG_ON                      1
+#define STM32UTIL_ASSERT_ON			1
 
 // debug-uart
 #define STM32UTIL_DEBUG_UART_USE_LL             1

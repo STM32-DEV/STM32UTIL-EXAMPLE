@@ -26,6 +26,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
+#include "stm32util-debug.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -125,7 +126,7 @@ void StartDefaultTask(void *argument)
 	/* Infinite loop */
 	int count = 0;
 	for(;;) {
-		printf("%d: 1: This is test.\r\n", count++);
+		TRACE("%d: 1: This is test.\r\n", count++);
 		osDelay(1);
 	}
 	/* USER CODE END StartDefaultTask */
@@ -139,8 +140,9 @@ void secondDefaultTask(void *argument)
 	/* Infinite loop */
 	int count = 0;
 	for(;;) {
-		printf("%d: 2: This is test.\r\n", count++);
+		WARNING("%d: 2: This is test.\r\n", count++);
 		osDelay(250);
+		ASSERT(count == 12345, "test");
 	}
 	/* USER CODE END StartDefaultTask */
 }
