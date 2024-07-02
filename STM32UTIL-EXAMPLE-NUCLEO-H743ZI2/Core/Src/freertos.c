@@ -25,8 +25,10 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "spi.h"
 #include <stdio.h>
 #include "stm32util-debug.h"
+#include "stm32util-hcms.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -64,8 +66,15 @@ const osThreadAttr_t secondTask_attributes = {
 	.stack_size = 256 * 4,
 	.priority = (osPriority_t) osPriorityNormal,
 };
-
 void secondDefaultTask(void *argument);
+
+osThreadId_t hcmsTaskHandle;
+const osThreadAttr_t hcmsTask_attributes = {
+	.name = "hcmsTask",
+	.stack_size = 256 * 4,
+	.priority = (osPriority_t) osPriorityNormal,
+};
+void hcmsDefaultTask(void *argument);
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void *argument);
@@ -105,6 +114,7 @@ void MX_FREERTOS_Init(void) {
 	/* USER CODE BEGIN RTOS_THREADS */
 	/* add threads, ... */
 	secondTaskHandle = osThreadNew(secondDefaultTask, NULL, &secondTask_attributes);
+	hcmsTaskHandle = osThreadNew(hcmsDefaultTask, NULL, &hcmsTask_attributes);
 	/* USER CODE END RTOS_THREADS */
 
 	/* USER CODE BEGIN RTOS_EVENTS */
@@ -136,15 +146,43 @@ void StartDefaultTask(void *argument)
 /* USER CODE BEGIN Application */
 void secondDefaultTask(void *argument)
 {
-	/* USER CODE BEGIN StartDefaultTask */
-	/* Infinite loop */
 	int count = 0;
 	for(;;) {
 		WARNING("%d: 2: This is test.\r\n", count++);
 		osDelay(250);
-		ASSERT(count == 12345, "test");
+		//ASSERT(count == 12345, "test");
 	}
-	/* USER CODE END StartDefaultTask */
+}
+
+void hcmsDefaultTask(void *argument)
+{
+	/*
+	                NVCI	NUCLEO	CN9
+	        DATA	PE6	-	20
+	        RS	PE5	-	18
+	        CLK	PE2	-	14
+	        CE	PE4	-	16
+	        BL	PE3	-	22
+	        RESET	PC13	PF8	24
+	        VDD
+	        GND
+	 */
+	int count = 0;
+
+	stm32util_hcms_init();
+
+	static char buffer[256];
+	for (int i = 0; i < 256; ++i) {
+		buffer[i] = i;
+	}
+
+	while (1) {
+		stm32util_hcms_puts(buffer + count % (256-4));
+		printf("3: %lu %d hcms\r\n", osKernelGetTickCount(), count);
+		osDelay(250);
+		HAL_GPIO_TogglePin(MX_GPIO(LD1));
+		++count;
+	}
 }
 
 /* USER CODE END Application */

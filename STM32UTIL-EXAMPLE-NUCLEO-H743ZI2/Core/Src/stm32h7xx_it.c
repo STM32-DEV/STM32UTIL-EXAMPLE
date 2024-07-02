@@ -23,6 +23,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "stm32util-debug-uart.h"
+#include "stm32util-hcms.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -56,6 +57,8 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
+extern DMA_HandleTypeDef hdma_spi4_tx;
+extern SPI_HandleTypeDef hspi4;
 extern TIM_HandleTypeDef htim7;
 
 /* USER CODE BEGIN EV */
@@ -161,6 +164,25 @@ void DebugMon_Handler(void)
 /******************************************************************************/
 
 /**
+ * @brief This function handles DMA1 stream6 global interrupt.
+ */
+void DMA1_Stream6_IRQHandler(void)
+{
+	/* USER CODE BEGIN DMA1_Stream6_IRQn 0 */
+#if STM32UTIL_HCMS_SPI_USE_LL
+	if (STM32UTIL_HCMS_SPI_DMA_IsActiveFlag_TC()) {
+		STM32UTIL_HCMS_SPI_DMA_ClearFlag_TC();
+		STM32UTIL_HCMS_SPI_DMA_TC_isr();
+	}
+#endif
+	/* USER CODE END DMA1_Stream6_IRQn 0 */
+	HAL_DMA_IRQHandler(&hdma_spi4_tx);
+	/* USER CODE BEGIN DMA1_Stream6_IRQn 1 */
+
+	/* USER CODE END DMA1_Stream6_IRQn 1 */
+}
+
+/**
  * @brief This function handles USART3 global interrupt.
  */
 void USART3_IRQHandler(void)
@@ -209,6 +231,20 @@ void TIM7_IRQHandler(void)
 	/* USER CODE BEGIN TIM7_IRQn 1 */
 
 	/* USER CODE END TIM7_IRQn 1 */
+}
+
+/**
+ * @brief This function handles SPI4 global interrupt.
+ */
+void SPI4_IRQHandler(void)
+{
+	/* USER CODE BEGIN SPI4_IRQn 0 */
+
+	/* USER CODE END SPI4_IRQn 0 */
+	HAL_SPI_IRQHandler(&hspi4);
+	/* USER CODE BEGIN SPI4_IRQn 1 */
+
+	/* USER CODE END SPI4_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */
