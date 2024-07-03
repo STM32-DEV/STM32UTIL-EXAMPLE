@@ -21,8 +21,8 @@
 
 // hcms
 #define STM32UTIL_HCMS_SPI_ENABLE               1
-#define STM32UTIL_HCMS_SPI_USE_DMA              1
-#define STM32UTIL_HCMS_SPI_USE_LL               0
+#define STM32UTIL_HCMS_SPI_USE_DMA              0
+#define STM32UTIL_HCMS_SPI_USE_LL               1
 #define STM32UTIL_HCMS_HSPI                     hspi4
 #define STM32UTIL_HCMS_SPI                      SPI4
 #define STM32UTIL_HCMS_SPI_DMA                  DMA1
