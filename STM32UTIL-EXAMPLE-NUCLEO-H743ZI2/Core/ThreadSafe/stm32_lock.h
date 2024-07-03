@@ -1,62 +1,62 @@
 /**
-  ******************************************************************************
-  * @file      stm32_lock.h
-  * @author    STMicroelectronics
-  * @brief     STMicroelectronics lock mechanisms
-  *
-  * @details
-  * This implementation supports the following strategies for handling
-  * thread-safe locks. The strategy can be explicitly selected by
-  * defining <tt>\STM32_THREAD_SAFE_STRATEGY = \<number></tt> in the project.
-  * Please look at the '<toolchain/library>_lock_glue.c' file for more details.
-  *
-  * 1. User defined thread-safe implementation.
-  *    User defined solution for handling thread-safety.
-  *    <br>
-  *    <b>NOTE:</b> The stubs in stm32_lock_user.h needs to be implemented to gain
-  *    thread-safety.
-  *
-  * 2. [<b>DEFAULT</b>] Allow lock usage from interrupts.
-  *    This implementation will ensure thread-safety by disabling all interrupts
-  *    during e.g. calls to malloc.
-  *    <br>
-  *    <b>NOTE:</b> Disabling all interrupts creates interrupt latency which
-  *    might not be desired for this application!
-  *
-  * 3. Deny lock usage from interrupts.
-  *    This implementation assumes single thread of execution.
-  *    <br>
-  *    <b>NOTE:</b> Thread-safety dependent functions will enter an infinity loop
-  *    if used in interrupt context.
-  *
-  * 4. Allow lock usage from interrupts. Implemented using FreeRTOS locks.
-  *    This implementation will ensure thread-safety by entering RTOS ISR capable
-  *    critical sections during e.g. calls to malloc.
-  *    By default this implementation supports 2 levels of recursive locking.
-  *    Adding additional levels requires 4 bytes per lock per level of RAM.
-  *    <br>
-  *    <b>NOTE:</b> Interrupts with high priority are not disabled. This implies
-  *    that the lock is not thread-safe from high priority interrupts!
-  *
-  * 5. Deny lock usage from interrupts. Implemented using FreeRTOS locks.
-  *    This implementation will ensure thread-safety by suspending all tasks
-  *    during e.g. calls to malloc.
-  *    <br>
-  *    <b>NOTE:</b> Thread-safety dependent functions will enter an infinity loop
-  *    if used in interrupt context.
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2024 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file      stm32_lock.h
+ * @author    STMicroelectronics
+ * @brief     STMicroelectronics lock mechanisms
+ *
+ * @details
+ * This implementation supports the following strategies for handling
+ * thread-safe locks. The strategy can be explicitly selected by
+ * defining <tt>\STM32_THREAD_SAFE_STRATEGY = \<number></tt> in the project.
+ * Please look at the '<toolchain/library>_lock_glue.c' file for more details.
+ *
+ * 1. User defined thread-safe implementation.
+ *    User defined solution for handling thread-safety.
+ *    <br>
+ *    <b>NOTE:</b> The stubs in stm32_lock_user.h needs to be implemented to gain
+ *    thread-safety.
+ *
+ * 2. [<b>DEFAULT</b>] Allow lock usage from interrupts.
+ *    This implementation will ensure thread-safety by disabling all interrupts
+ *    during e.g. calls to malloc.
+ *    <br>
+ *    <b>NOTE:</b> Disabling all interrupts creates interrupt latency which
+ *    might not be desired for this application!
+ *
+ * 3. Deny lock usage from interrupts.
+ *    This implementation assumes single thread of execution.
+ *    <br>
+ *    <b>NOTE:</b> Thread-safety dependent functions will enter an infinity loop
+ *    if used in interrupt context.
+ *
+ * 4. Allow lock usage from interrupts. Implemented using FreeRTOS locks.
+ *    This implementation will ensure thread-safety by entering RTOS ISR capable
+ *    critical sections during e.g. calls to malloc.
+ *    By default this implementation supports 2 levels of recursive locking.
+ *    Adding additional levels requires 4 bytes per lock per level of RAM.
+ *    <br>
+ *    <b>NOTE:</b> Interrupts with high priority are not disabled. This implies
+ *    that the lock is not thread-safe from high priority interrupts!
+ *
+ * 5. Deny lock usage from interrupts. Implemented using FreeRTOS locks.
+ *    This implementation will ensure thread-safety by suspending all tasks
+ *    during e.g. calls to malloc.
+ *    <br>
+ *    <b>NOTE:</b> Thread-safety dependent functions will enter an infinity loop
+ *    if used in interrupt context.
+ *
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2024 STMicroelectronics.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
 
 #ifndef __STM32_LOCK_H__
 #define __STM32_LOCK_H__
@@ -80,32 +80,32 @@ void Error_Handler(void);
 /* Public macros -------------------------------------------------------------*/
 /** Blocks execution */
 #define STM32_LOCK_BLOCK()                      \
-  do                                            \
-  {                                             \
-    __disable_irq();                            \
-    Error_Handler();                            \
-    while (1);                                  \
-  } while (0)
+	do                                            \
+	{                                             \
+		__disable_irq();                            \
+		Error_Handler();                            \
+		while (1);                                  \
+	} while (0)
 
 /** Blocks execution if argument is NULL */
 #define STM32_LOCK_BLOCK_IF_NULL_ARGUMENT(x)    \
-  do                                            \
-  {                                             \
-    if ((x) == NULL)                            \
-    {                                           \
-      STM32_LOCK_BLOCK();                       \
-    }                                           \
-  } while (0)
+	do                                            \
+	{                                             \
+		if ((x) == NULL)                            \
+		{                                           \
+			STM32_LOCK_BLOCK();                       \
+		}                                           \
+	} while (0)
 
 /** Blocks execution if in interrupt context */
 #define STM32_LOCK_BLOCK_IF_INTERRUPT_CONTEXT() \
-  do                                            \
-  {                                             \
-    if (__get_IPSR())                           \
-    {                                           \
-      STM32_LOCK_BLOCK();                       \
-    }                                           \
-  } while (0)
+	do                                            \
+	{                                             \
+		if (__get_IPSR())                           \
+		{                                           \
+			STM32_LOCK_BLOCK();                       \
+		}                                           \
+	} while (0)
 
 /** Hide unused parameter warning from compiler */
 #define STM32_LOCK_UNUSED(var) (void)var
@@ -136,61 +136,61 @@ void Error_Handler(void);
 /* Private typedef ---------------------------------------------------------*/
 typedef struct
 {
-  uint8_t flag; /**< Backup of PRIMASK.PM at nesting level 0 */
-  uint8_t counter; /**< Nesting level */
+	uint8_t flag; /**< Backup of PRIMASK.PM at nesting level 0 */
+	uint8_t counter; /**< Nesting level */
 } LockingData_t;
 
 /* Private functions -------------------------------------------------------*/
 
 /**
-  * @brief Initialize STM32 lock
-  * @param lock The lock to init
-  */
+ * @brief Initialize STM32 lock
+ * @param lock The lock to init
+ */
 static inline void stm32_lock_init(LockingData_t *lock)
 {
-  STM32_LOCK_BLOCK_IF_NULL_ARGUMENT(lock);
-  lock->flag = 0;
-  lock->counter = 0;
+	STM32_LOCK_BLOCK_IF_NULL_ARGUMENT(lock);
+	lock->flag = 0;
+	lock->counter = 0;
 }
 
 /**
-  * @brief Acquire STM32 lock
-  * @param lock The lock to acquire
-  */
+ * @brief Acquire STM32 lock
+ * @param lock The lock to acquire
+ */
 static inline void stm32_lock_acquire(LockingData_t *lock)
 {
-  uint8_t flag = (uint8_t)(__get_PRIMASK() & 0x1); /* PRIMASK.PM */
-  __disable_irq();
-  __DSB();
-  __ISB();
-  STM32_LOCK_BLOCK_IF_NULL_ARGUMENT(lock);
-  if (lock->counter == 0)
-  {
-    lock->flag = flag;
-  }
-  else if (lock->counter == UINT8_MAX)
-  {
-    STM32_LOCK_BLOCK();
-  }
-  lock->counter++;
+	uint8_t flag = (uint8_t)(__get_PRIMASK() & 0x1); /* PRIMASK.PM */
+	__disable_irq();
+	__DSB();
+	__ISB();
+	STM32_LOCK_BLOCK_IF_NULL_ARGUMENT(lock);
+	if (lock->counter == 0)
+	{
+		lock->flag = flag;
+	}
+	else if (lock->counter == UINT8_MAX)
+	{
+		STM32_LOCK_BLOCK();
+	}
+	lock->counter++;
 }
 
 /**
-  * @brief Release STM32 lock
-  * @param lock The lock to release
-  */
+ * @brief Release STM32 lock
+ * @param lock The lock to release
+ */
 static inline void stm32_lock_release(LockingData_t *lock)
 {
-  STM32_LOCK_BLOCK_IF_NULL_ARGUMENT(lock);
-  if (lock->counter == 0)
-  {
-    STM32_LOCK_BLOCK();
-  }
-  lock->counter--;
-  if (lock->counter == 0 && lock->flag == 0)
-  {
-    __enable_irq();
-  }
+	STM32_LOCK_BLOCK_IF_NULL_ARGUMENT(lock);
+	if (lock->counter == 0)
+	{
+		STM32_LOCK_BLOCK();
+	}
+	lock->counter--;
+	if (lock->counter == 0 && lock->flag == 0)
+	{
+		__enable_irq();
+	}
 }
 
 #elif STM32_THREAD_SAFE_STRATEGY == 3
@@ -208,32 +208,32 @@ typedef uint8_t LockingData_t;  /**< Unused */
 /* Private functions -------------------------------------------------------*/
 
 /**
-  * @brief Initialize STM32 lock
-  * @param lock The lock to init
-  */
+ * @brief Initialize STM32 lock
+ * @param lock The lock to init
+ */
 static inline void stm32_lock_init(LockingData_t *lock)
 {
-  STM32_LOCK_BLOCK_IF_NULL_ARGUMENT(lock);
+	STM32_LOCK_BLOCK_IF_NULL_ARGUMENT(lock);
 }
 
 /**
-  * @brief Acquire STM32 lock
-  * @param lock The lock to acquire
-  */
+ * @brief Acquire STM32 lock
+ * @param lock The lock to acquire
+ */
 static inline void stm32_lock_acquire(LockingData_t *lock)
 {
-  STM32_LOCK_BLOCK_IF_NULL_ARGUMENT(lock);
-  STM32_LOCK_BLOCK_IF_INTERRUPT_CONTEXT();
+	STM32_LOCK_BLOCK_IF_NULL_ARGUMENT(lock);
+	STM32_LOCK_BLOCK_IF_INTERRUPT_CONTEXT();
 }
 
 /**
-  * @brief Release ST lock
-  * @param lock The lock to release
-  */
+ * @brief Release ST lock
+ * @param lock The lock to release
+ */
 static inline void stm32_lock_release(LockingData_t *lock)
 {
-  STM32_LOCK_BLOCK_IF_NULL_ARGUMENT(lock);
-  STM32_LOCK_BLOCK_IF_INTERRUPT_CONTEXT();
+	STM32_LOCK_BLOCK_IF_NULL_ARGUMENT(lock);
+	STM32_LOCK_BLOCK_IF_INTERRUPT_CONTEXT();
 }
 
 #elif STM32_THREAD_SAFE_STRATEGY == 4
@@ -255,58 +255,58 @@ static inline void stm32_lock_release(LockingData_t *lock)
 #define STM32_LOCK_MAX_NESTED_LEVELS 2 /**< Max nesting level of interrupts */
 typedef struct
 {
-  uint32_t basepri[STM32_LOCK_MAX_NESTED_LEVELS];
-  uint8_t nesting_level;
+	uint32_t basepri[STM32_LOCK_MAX_NESTED_LEVELS];
+	uint8_t nesting_level;
 } LockingData_t;
 
 /* Private macros ----------------------------------------------------------*/
 /** Blocks execution if reached max nesting level */
 #define STM32_LOCK_ASSERT_VALID_NESTING_LEVEL(lock)                   \
-  do                                                                  \
-  {                                                                   \
-    if (lock->nesting_level >= STM32_LOCK_ARRAY_SIZE(lock->basepri))  \
-    {                                                                 \
-      STM32_LOCK_BLOCK();                                             \
-    }                                                                 \
-  } while (0)
+	do                                                                  \
+	{                                                                   \
+		if (lock->nesting_level >= STM32_LOCK_ARRAY_SIZE(lock->basepri))  \
+		{                                                                 \
+			STM32_LOCK_BLOCK();                                             \
+		}                                                                 \
+	} while (0)
 
 /* Private functions -------------------------------------------------------*/
 
 /**
-  * @brief Initialize STM32 lock
-  * @param lock The lock to init
-  */
+ * @brief Initialize STM32 lock
+ * @param lock The lock to init
+ */
 static inline void stm32_lock_init(LockingData_t *lock)
 {
-  STM32_LOCK_BLOCK_IF_NULL_ARGUMENT(lock);
-  for (size_t i = 0; i < STM32_LOCK_ARRAY_SIZE(lock->basepri); i++)
-  {
-    lock->basepri[i] = 0;
-  }
-  lock->nesting_level = 0;
+	STM32_LOCK_BLOCK_IF_NULL_ARGUMENT(lock);
+	for (size_t i = 0; i < STM32_LOCK_ARRAY_SIZE(lock->basepri); i++)
+	{
+		lock->basepri[i] = 0;
+	}
+	lock->nesting_level = 0;
 }
 
 /**
-  * @brief Acquire STM32 lock
-  * @param lock The lock to acquire
-  */
+ * @brief Acquire STM32 lock
+ * @param lock The lock to acquire
+ */
 static inline void stm32_lock_acquire(LockingData_t *lock)
 {
-  STM32_LOCK_BLOCK_IF_NULL_ARGUMENT(lock);
-  STM32_LOCK_ASSERT_VALID_NESTING_LEVEL(lock);
-  lock->basepri[lock->nesting_level++] = taskENTER_CRITICAL_FROM_ISR();
+	STM32_LOCK_BLOCK_IF_NULL_ARGUMENT(lock);
+	STM32_LOCK_ASSERT_VALID_NESTING_LEVEL(lock);
+	lock->basepri[lock->nesting_level++] = taskENTER_CRITICAL_FROM_ISR();
 }
 
 /**
-  * @brief Release STM32 lock
-  * @param lock The lock to release
-  */
+ * @brief Release STM32 lock
+ * @param lock The lock to release
+ */
 static inline void stm32_lock_release(LockingData_t *lock)
 {
-  STM32_LOCK_BLOCK_IF_NULL_ARGUMENT(lock);
-  lock->nesting_level--;
-  STM32_LOCK_ASSERT_VALID_NESTING_LEVEL(lock);
-  taskEXIT_CRITICAL_FROM_ISR(lock->basepri[lock->nesting_level]);
+	STM32_LOCK_BLOCK_IF_NULL_ARGUMENT(lock);
+	lock->nesting_level--;
+	STM32_LOCK_ASSERT_VALID_NESTING_LEVEL(lock);
+	taskEXIT_CRITICAL_FROM_ISR(lock->basepri[lock->nesting_level]);
 }
 
 #undef STM32_LOCK_ASSERT_VALID_NESTING_LEVEL
@@ -334,34 +334,34 @@ typedef uint8_t LockingData_t;  /**< Unused */
 /* Private functions -------------------------------------------------------*/
 
 /**
-  * @brief Initialize STM32 lock
-  * @param lock The lock to init
-  */
+ * @brief Initialize STM32 lock
+ * @param lock The lock to init
+ */
 static inline void stm32_lock_init(LockingData_t *lock)
 {
-  STM32_LOCK_BLOCK_IF_NULL_ARGUMENT(lock);
+	STM32_LOCK_BLOCK_IF_NULL_ARGUMENT(lock);
 }
 
 /**
-  * @brief Acquire STM32 lock
-  * @param lock The lock to acquire
-  */
+ * @brief Acquire STM32 lock
+ * @param lock The lock to acquire
+ */
 static inline void stm32_lock_acquire(LockingData_t *lock)
 {
-  STM32_LOCK_BLOCK_IF_NULL_ARGUMENT(lock);
-  STM32_LOCK_BLOCK_IF_INTERRUPT_CONTEXT();
-  vTaskSuspendAll();
+	STM32_LOCK_BLOCK_IF_NULL_ARGUMENT(lock);
+	STM32_LOCK_BLOCK_IF_INTERRUPT_CONTEXT();
+	vTaskSuspendAll();
 }
 
 /**
-  * @brief Release STM32 lock
-  * @param lock The lock to release
-  */
+ * @brief Release STM32 lock
+ * @param lock The lock to release
+ */
 static inline void stm32_lock_release(LockingData_t *lock)
 {
-  STM32_LOCK_BLOCK_IF_NULL_ARGUMENT(lock);
-  STM32_LOCK_BLOCK_IF_INTERRUPT_CONTEXT();
-  xTaskResumeAll();
+	STM32_LOCK_BLOCK_IF_NULL_ARGUMENT(lock);
+	STM32_LOCK_BLOCK_IF_INTERRUPT_CONTEXT();
+	xTaskResumeAll();
 }
 
 #else
